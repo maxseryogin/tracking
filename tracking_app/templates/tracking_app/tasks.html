@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Список задач</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-4">Список задач</h1>
+
+      <form method="get" class="form-inline mb-3">
+        {{ filter_form.as_p }}
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+      </form>
+
+      <ul class="list-group">
+        {% for task in tasks %}
+        <li class="list-group-item">
+          <a href="{% url 'task-detail' task.pk %}">{{ task.title }}</a> - {{
+          task.status }}
+        </li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'task-create' %}" class="btn btn-success mt-3"
+        >Создать новую задачу</a
+      >
+    </div>
+  </body>
+</html>

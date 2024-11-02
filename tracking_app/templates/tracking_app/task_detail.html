@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Детали задачи</title>
+  </head>
+  <body>
+    <h1>{{ task.title }}</h1>
+    <p><strong>Описание:</strong> {{ task.description }}</p>
+    <p><strong>Статус:</strong> {{ task.status }}</p>
+    <p><strong>Приоритет:</strong> {{ task.priority }}</p>
+    <p><strong>Дедлайн:</strong> {{ task.deadline }}</p>
+    <p><strong>Категория:</strong> {{ task.category }}</p>
+    <p><strong>Пользователь:</strong> {{ task.user }}</p>
+    <a href="{% url 'task-list' %}">Назад к списку задач</a>
+  </body>
+</html>
