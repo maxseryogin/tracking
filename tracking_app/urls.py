@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView
+from django.contrib.auth import views as auth_views
+from .views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, CommentDeleteView, LikeCommentView, CommentUpdateView, like_comment
 
 urlpatterns = [
     path('', TaskListView.as_view(), name='task-list'),
@@ -7,4 +8,8 @@ urlpatterns = [
     path('task/new/', TaskCreateView.as_view(), name='task-create'),
     path('task/<int:pk>/edit/', TaskUpdateView.as_view(), name='task-update'),
     path('task/<int:pk>/delete/', TaskDeleteView.as_view(), name='task-delete'),
+    path('comment/<int:pk>/edit/', CommentUpdateView.as_view(), name='edit_comment'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='delete_comment'),
+    path('comment/<int:pk>/like/', like_comment, name='like_comment'),
+    path('tasks/login/', auth_views.LoginView.as_view(template_name='tracking_app/login.html'), name='login'),
 ]

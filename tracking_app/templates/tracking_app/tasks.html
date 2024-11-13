@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <title>Список задач</title>
@@ -11,6 +11,13 @@
   <body>
     <div class="container">
       <h1 class="mt-4">Список задач</h1>
+
+      <!-- Проверка аутентификации пользователя -->
+      {% if user.is_authenticated %}
+      <p>Привет, {{ user.username }}!</p>
+      {% else %}
+      <a href="{% url 'login' %}">Войти</a>
+      {% endif %}
 
       <form method="get" class="form-inline mb-3">
         {{ filter_form.as_p }}

@@ -1,8 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <title>Детали задачи</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f9;
+        color: #333;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #4a4a4a;
+      }
+
+      p {
+        line-height: 1.6;
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      form {
+        margin-top: 20px;
+      }
+
+      div {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+    </style>
   </head>
   <body>
     <h1>{{ task.title }}</h1>
@@ -13,5 +65,25 @@
     <p><strong>Категория:</strong> {{ task.category }}</p>
     <p><strong>Пользователь:</strong> {{ task.user }}</p>
     <a href="{% url 'task-list' %}">Назад к списку задач</a>
+
+    <h2>Комментарии</h2>
+    <div>
+      {% for comment in comments %}
+      <p><strong>{{ comment.author }}:</strong> {{ comment.content }}</p>
+      <p><em>{{ comment.created_at }}</em></p>
+      <p>Лайков: {{ comment.likes }} 💖</p>
+      <a href="{% url 'like_comment' comment.pk %}">Лайкнуть</a>
+      <a href="{% url 'edit_comment' comment.pk %}">Редактировать</a>
+      <a href="{% url 'delete_comment' comment.pk %}">Удалить</a>
+      {% empty %}
+      <p>Комментариев пока нет.</p>
+      {% endfor %}
+    </div>
+
+    <h3>Добавить комментарий</h3>
+    <form method="post">
+      {% csrf_token %} {{ comment_form.as_p }}
+      <button type="submit">Отправить</button>
+    </form>
   </body>
 </html>

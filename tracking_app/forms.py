@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task
+from .models import Task, Comment
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -27,3 +27,8 @@ class TaskFilterForm(forms.Form):
         label='Приоритет',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
