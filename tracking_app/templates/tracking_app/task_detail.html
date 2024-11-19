@@ -47,7 +47,7 @@
         margin-top: 20px;
       }
 
-      div {
+      .comment {
         margin-bottom: 20px;
         padding: 10px;
         background-color: #fff;
@@ -59,29 +59,31 @@
   <body>
     <h1>{{ task.title }}</h1>
     <p><strong>Описание:</strong> {{ task.description }}</p>
-    <p><strong>Статус:</strong> {{ task.status }}</p>
-    <p><strong>Приоритет:</strong> {{ task.priority }}</p>
+    <p><strong>Статус:</strong> {{ task.get_status_display }}</p>
+    <p><strong>Приоритет:</strong> {{ task.get_priority_display }}</p>
     <p><strong>Дедлайн:</strong> {{ task.deadline }}</p>
-    <p><strong>Категория:</strong> {{ task.category }}</p>
     <p><strong>Пользователь:</strong> {{ task.user }}</p>
     <a href="{% url 'task-list' %}">Назад к списку задач</a>
 
     <h2>Комментарии</h2>
-    <div>
-      {% for comment in comments %}
+    {% for comment in comments %}
+    <div class="comment">
       <p><strong>{{ comment.author }}:</strong> {{ comment.content }}</p>
       <p><em>{{ comment.created_at }}</em></p>
       <p>Лайков: {{ comment.likes }} 💖</p>
       <a href="{% url 'like_comment' comment.pk %}">Лайкнуть</a>
       <a href="{% url 'edit_comment' comment.pk %}">Редактировать</a>
       <a href="{% url 'delete_comment' comment.pk %}">Удалить</a>
-      {% empty %}
-      <p>Комментариев пока нет.</p>
-      {% endfor %}
+      {% if comment.file %}
+      <a href="{{ comment.file.url }}" target="_blank">Прикрепленный файл</a>
+      {% endif %}
     </div>
+    {% empty %}
+    <p>Комментариев пока нет.</p>
+    {% endfor %}
 
     <h3>Добавить комментарий</h3>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %} {{ comment_form.as_p }}
       <button type="submit">Отправить</button>
     </form>

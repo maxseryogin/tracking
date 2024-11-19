@@ -12,13 +12,14 @@
     <div class="container">
       <h1 class="mt-4">Список задач</h1>
 
-      <!-- Проверка аутентификации пользователя -->
       {% if user.is_authenticated %}
       <p>Привет, {{ user.username }}!</p>
       {% else %}
-      <a href="{% url 'login' %}">Войти</a>
-      {% endif %}
-
+      <p>
+        Вы не авторизированный пользователь.
+        <a href="{% url 'login' %}">Войти</a>
+      </p>
+      {% endif %} {% if user.is_authenticated %}
       <form method="get" class="form-inline mb-3">
         {{ filter_form.as_p }}
         <button type="submit" class="btn btn-primary">Фильтровать</button>
@@ -27,14 +28,15 @@
       <ul class="list-group">
         {% for task in tasks %}
         <li class="list-group-item">
-          <a href="{% url 'task-detail' task.pk %}">{{ task.title }}</a> - {{
-          task.status }}
+          <a href="{% url 'task-detail' task.pk %}">{{ task.title }}</a>
+          - {{ task.get_status_display }}
         </li>
         {% endfor %}
       </ul>
       <a href="{% url 'task-create' %}" class="btn btn-success mt-3"
         >Создать новую задачу</a
       >
+      {% endif %}
     </div>
   </body>
 </html>

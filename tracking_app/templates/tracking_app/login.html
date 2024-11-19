@@ -4,12 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h2>Login</h2>
+    <h2>Логин</h2>
+
     <form method="post">
       {% csrf_token %} {{ form.as_p }}
-      <button type="submit">Login</button>
+      <button type="submit" class="btn btn-primary">Логин</button>
     </form>
+
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+      <strong>Неверный логин или пароль.</strong><br />
+      <p>
+        Не зарегистрированы?
+        <a href="/tasks/register" id="register-link">Зарегистрироваться</a>
+      </p>
+    </div>
+    {% endif %}
   </body>
 </html>

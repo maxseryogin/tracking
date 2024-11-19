@@ -1,12 +1,15 @@
+from django.http import HttpResponseRedirect
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .models import Task, Comment, Like
-from .forms import TaskForm, TaskFilterForm, CommentForm
+from .forms import CustomUserCreationForm, TaskForm, TaskFilterForm, CommentForm
 from .mixins import UserIsOwnerMixin
 
 class TaskListView(ListView):
@@ -45,15 +48,15 @@ class TaskDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if request.user.is_authenticated:
-            comment_form = CommentForm(request.POST)
+            comment_form = CommentForm(request.POST, request.FILES)
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
                 comment.author = request.user
                 comment.task = self.object
                 comment.save()
-                return redirect('task-detail', pk=comment.task.pk)
-        else:
-            return redirect('login')  # Перенаправление на страницу входа, если пользователь не аутентифицирован
+                return redirect('task-detail', pk=self.object.pk)
+        return redirect('login')
+    
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
@@ -101,6 +104,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         comment = self.get_object()
         return self.request.user == comment.author
 
+
     def get_success_url(self):
         return reverse_lazy('task-list')
 
@@ -113,17 +117,25 @@ class LikeCommentView(View):
             like.delete()  # If the like already exists, remove it (toggle functionality)
         return redirect('task_detail', pk=comment.task.pk)
 
-class RegisterView(View):
-    def get(self, request):
-        # Логика для отображения формы регистрации
-        return render(request, 'register.html')
 
-    def post(self, request):
-        # Логика для обработки данных формы регистрации
-        pass
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('task-list') 
+    else:
+        form = CustomUserCreationForm()
 
+    return render(request, 'tracking_app/register.html', {'form': form})
+@login_required
 def like_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
-    comment.likes += 1
-    comment.save()
+
+    if not Like.objects.filter(user=request.user, comment=comment).exists():
+        Like.objects.create(user=request.user, comment=comment)
+        comment.likes += 1
+        comment.save()
+
     return redirect('task-detail', pk=comment.task.pk)

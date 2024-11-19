@@ -1,6 +1,8 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, CommentDeleteView, LikeCommentView, CommentUpdateView, like_comment
+from .views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, CommentDeleteView, LikeCommentView, CommentUpdateView, like_comment, register
 
 urlpatterns = [
     path('', TaskListView.as_view(), name='task-list'),
@@ -12,4 +14,8 @@ urlpatterns = [
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='delete_comment'),
     path('comment/<int:pk>/like/', like_comment, name='like_comment'),
     path('tasks/login/', auth_views.LoginView.as_view(template_name='tracking_app/login.html'), name='login'),
+    path('tasks/register/', register, name='register'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
